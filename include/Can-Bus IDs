@@ -1,0 +1,8 @@
+
+
+MessageBasisID          MSG ID 0x258
+IP_Send_to_CAN          MSG ID 0x259
+Abrufen Update NR       MSG ID 0x25A    MSG Byte 1 = 0x01
+Abrufen Reboots NR      MSG ID 0x25A    MSG Byte 1 = 0x02
+Send Update NR          MSG ID 0x25B
+Send Reboots NR         MSG ID 0x25C
