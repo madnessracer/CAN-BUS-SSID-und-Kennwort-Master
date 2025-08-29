@@ -9,7 +9,7 @@ byte OTA_On = 0;
 int WiFi_Error = 0;
 byte SSID_Speicher[50][33];
 byte SSID_Byte_arrey[33];
-String NeueSSID;
+char NeueSSID[33];
 
 void OTA_Stop()
 {
@@ -35,19 +35,15 @@ void OTA_Start()
   }
 
   // SSID vom FS lesen und übergeben
-  String SSID_str = SSID_Lesen();
-  int SSID_str_len = SSID_str.length() + 1;
-  char SSID_char[SSID_str_len];
-  SSID_str.toCharArray(SSID_char, SSID_str_len);
+  char SSID_char[33];
+  SSID_Lesen(SSID_char, sizeof(SSID_char));
   Serial.println(SSID_char);
   ssid = SSID_char;
   // ENDE SSID vom FS lesen und übergeben
 
   // PASSWORD vom FS lesen und übergeben
-  String PASSWORD_str = PASSWORD_Lesen();
-  int PASSWORD_str_len = PASSWORD_str.length() + 1;
-  char PASSWORD_char[PASSWORD_str_len];
-  PASSWORD_str.toCharArray(PASSWORD_char, PASSWORD_str_len);
+  char PASSWORD_char[33];
+  PASSWORD_Lesen(PASSWORD_char, sizeof(PASSWORD_char));
   Serial.println(PASSWORD_char);
   password = PASSWORD_char;
   // ENDE PASSWORD vom FS lesen und übergeben
@@ -115,23 +111,23 @@ void WifiScan() // WLAN Netzwerke Scannen und an CanBus Senden
 
     CAN_Send(3001, 0x03, n); // SSID Anzahl gefunden
 
-    String SSID_gefunden;
+    char SSID_gefunden[33];
 
     Serial.println(" networks found");
     Serial.println("SSID");
     for (int i = 0; i < n; ++i)
     {
       // Serial.printf("%-32.32s", WiFi.SSID(i).c_str());
-      SSID_gefunden = WiFi.SSID(i); // printf("%-32.32s", WiFi.SSID(i).c_str());
-
-      for (int a = SSID_gefunden.length(); a < 32; ++a)
-      {
-        SSID_gefunden += " ";
+      strncpy(SSID_gefunden, WiFi.SSID(i).c_str(), sizeof(SSID_gefunden));
+      SSID_gefunden[sizeof(SSID_gefunden)-1] = '\0';
+      // Mit Leerzeichen auffüllen
+      int len = strlen(SSID_gefunden);
+      for (int a = len; a < 32; ++a) {
+        SSID_gefunden[a] = ' ';
       }
-
-      String message = SSID_gefunden;
-      byte plain[message.length()];
-      message.getBytes(plain, message.length() + 1);
+      SSID_gefunden[32] = '\0';
+      byte plain[33];
+      memcpy(plain, SSID_gefunden, 33);
 
       for (int b = 0; b < 32; ++b)
       {
@@ -149,7 +145,7 @@ void WifiScan() // WLAN Netzwerke Scannen und an CanBus Senden
       delay(100);
       CAN_Send(3006, i + 1, plain[28], plain[29], plain[30], plain[31]);
 
-      Serial.println(SSID_gefunden);
+  Serial.println(SSID_gefunden);
 
       delay(10);
     }
@@ -168,24 +164,30 @@ void WifiSsidAuswahl(byte wert) // SSID auswahl und speichern
     SSID_Byte_arrey[b] = SSID_Speicher[wert][b];
   }
 
-  NeueSSID = String((char *)SSID_Byte_arrey);
-
-  NeueSSID.trim();
+  strncpy(NeueSSID, (char *)SSID_Byte_arrey, sizeof(NeueSSID));
+  NeueSSID[sizeof(NeueSSID)-1] = '\0'; // Nullterminierung sicherstellen
+  // Leerzeichen am Ende entfernen (wie trim)
+  for (int i = strlen(NeueSSID) - 1; i >= 0; i--) {
+    if (NeueSSID[i] == ' ' || NeueSSID[i] == '\0') {
+      NeueSSID[i] = '\0';
+    } else {
+      break;
+    }
+  }
   SSID_Schreiben(NeueSSID);
 }
 
 void Aktuelle_SSID_Senden() // SSID an CanBus Senden
 {
-  String SSID_gespeichert = SSID_Lesen();
-
-  for (int a = SSID_gespeichert.length(); a < 32; ++a)
-  {
-    SSID_gespeichert += " ";
+  char SSID_gespeichert[33];
+  SSID_Lesen(SSID_gespeichert, sizeof(SSID_gespeichert));
+  int len = strlen(SSID_gespeichert);
+  for (int a = len; a < 32; ++a) {
+    SSID_gespeichert[a] = ' ';
   }
-
-  String message = SSID_gespeichert;
-  byte plain[message.length()];
-  message.getBytes(plain, message.length() + 1);
+  SSID_gespeichert[32] = '\0';
+  byte plain[33];
+  memcpy(plain, SSID_gespeichert, 33);
 
   delay(500);
   CAN_Send(3010, plain[0], plain[1], plain[2], plain[3], plain[4], plain[5], plain[6], plain[7]);
@@ -199,16 +201,15 @@ void Aktuelle_SSID_Senden() // SSID an CanBus Senden
 
 void Aktuelle_PASSWORT_Senden() // Passwort an CanBus Senden
 {
-  String SSID_gespeichert = PASSWORD_Lesen();
-
-  for (int a = SSID_gespeichert.length(); a < 32; ++a)
-  {
-    SSID_gespeichert += " ";
+  char SSID_gespeichert[33];
+  PASSWORD_Lesen(SSID_gespeichert, sizeof(SSID_gespeichert));
+  int len2 = strlen(SSID_gespeichert);
+  for (int a = len2; a < 32; ++a) {
+    SSID_gespeichert[a] = ' ';
   }
-
-  String message = SSID_gespeichert;
-  byte plain[message.length()];
-  message.getBytes(plain, message.length() + 1);
+  SSID_gespeichert[32] = '\0';
+  byte plain[33];
+  memcpy(plain, SSID_gespeichert, 33);
 
   delay(500);
   CAN_Send(3014, plain[0], plain[1], plain[2], plain[3], plain[4], plain[5], plain[6], plain[7]);

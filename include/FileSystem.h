@@ -239,20 +239,22 @@ void testFileIO(fs::FS &fs, const char *path)
     }
 }
 
-String SSID_Lesen()
+void SSID_Lesen(char* ziel, size_t len)
 {
     FS_Open();
     readFile(LittleFS, "/SSID.txt");
     FS_Close();
-    return FileBuffer;
+    strncpy(ziel, FileBuffer, len);
+    ziel[len-1] = '\0';
 }
 
-String PASSWORD_Lesen()
+void PASSWORD_Lesen(char* ziel, size_t len)
 {
     FS_Open();
     readFile(LittleFS, "/PASSWORD.txt");
     FS_Close();
-    return FileBuffer;
+    strncpy(ziel, FileBuffer, len);
+    ziel[len-1] = '\0';
 }
 
 void SSID_Schreiben(String Wert)
@@ -263,7 +265,9 @@ void SSID_Schreiben(String Wert)
     writeFile(LittleFS, "/SSID.txt", arr);
     FS_Close();
 
-    Serial.println(SSID_Lesen());
+    char buffer[33];
+    SSID_Lesen(buffer, sizeof(buffer));
+    Serial.println(buffer);
     Serial.println();
 }
 
@@ -275,7 +279,9 @@ void PASSWORD_Schreiben(String Wert)
     writeFile(LittleFS, "/PASSWORD.txt", arr);
     FS_Close();
 
-    Serial.println(PASSWORD_Lesen());
+    char buffer[33];
+    PASSWORD_Lesen(buffer, sizeof(buffer));
+    Serial.println(buffer);
     Serial.println();
 }
 
