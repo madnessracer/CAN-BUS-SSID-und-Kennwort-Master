@@ -1,3 +1,6 @@
+// Copyright (c) 2025 madnessracer
+
+
 #ifndef __Wlan_Config_H__
 #define __Wlan_Config_H__
 

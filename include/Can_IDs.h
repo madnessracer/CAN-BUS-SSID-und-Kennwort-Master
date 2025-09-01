@@ -1,3 +1,4 @@
+// Copyright (c) 2025 madnessracer
 
 #ifndef __CAN_IDS_H__
 #define __CAN_IDS_H__

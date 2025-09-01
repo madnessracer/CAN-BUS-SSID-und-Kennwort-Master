@@ -1,3 +1,6 @@
+// Copyright (c) 2025 madnessracer
+
+
 #ifndef __CAN_INPUT_OTA_H__
 #define __CAN_INPUT_OTA_H__
 

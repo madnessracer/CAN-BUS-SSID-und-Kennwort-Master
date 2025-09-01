@@ -1,3 +1,5 @@
+// Copyright (c) 2025 madnessracer
+
 #ifndef __CAN_SUBs_H__
 #define __CAN_SUBs_H__
 

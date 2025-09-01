@@ -1,3 +1,8 @@
+// Copyright (c) 2025 madnessracer
+
+#include <Arduino.h>
+#include <WiFi.h>
+#include <ArduinoOTA.h>
 #include <Arduino.h>
 #include <WiFi.h>
 #include <ArduinoOTA.h>

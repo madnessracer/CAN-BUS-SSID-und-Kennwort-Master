@@ -1,3 +1,6 @@
+// Copyright (c) 2025 madnessracer
+
+
 #ifndef __FILESYSTEM_H__
 #define __FILESYSTEM_H__
 

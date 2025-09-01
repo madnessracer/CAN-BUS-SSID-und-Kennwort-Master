@@ -50,4 +50,4 @@ Sende eine CAN-Nachricht mit ID 0x407 und Datenbytes `0x01 0x00`.
 
 ---
 
-© 2025 madnessracer
+© 2025 madnessracer. Alle Rechte vorbehalten.
